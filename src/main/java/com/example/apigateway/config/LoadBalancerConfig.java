@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import reactor.core.publisher.Flux;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Configuration
@@ -36,17 +38,23 @@ public class LoadBalancerConfig {
         @Override
         public Flux<List<ServiceInstance>> get() {
 
-            String[] addr = wasStateManager.getRandomUpInstance().split(":");
-            // 서비스 인스턴스를 직접 생성합니다
-            ServiceInstance serviceInstance = new DefaultServiceInstance(
-                    "dynamic-route-instance", // 서비스 이름
-                    "dynamic-route",
-                    addr[0],              // 호스트명 (예시)
-                    Integer.parseInt(addr[1]),                     // 포트
-                    false);                   // SSL 사용 여부
+            List<ServiceInstance> list = new ArrayList<>();
+            int count = 1;
+            for (String address : wasStateManager.getUpInstances()) {
+                String[] ipAndPort = address.split(":");
+                // 서비스 인스턴스를 직접 생성합니다
+                ServiceInstance serviceInstance = new DefaultServiceInstance(
+                        String.format("dynamic-route-instance%d", count++), // 서비스 이름
+                        "dynamic-route",
+                        ipAndPort[0],              // 호스트명 (예시)
+                        Integer.parseInt(ipAndPort[1]),                     // 포트
+                        false);                   // SSL 사용 여부
+
+                list.add(serviceInstance);
+            }
 
             // Flux를 사용하여 반환 (여러 서비스 인스턴스를 지원하려면 List<ServiceInstance>를 Flux로 반환)
-            return Flux.just(List.of(serviceInstance));
+            return Flux.just(list);
         }
 
         @Override
