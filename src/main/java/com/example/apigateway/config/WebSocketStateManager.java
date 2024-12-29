@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 @Component
-public class WasStateManager {
+public class WebSocketStateManager {
 
     private final Set<String> upInstances = new ConcurrentSkipListSet<>();
     private final Set<String> downInstances = new ConcurrentSkipListSet<>();
