@@ -11,9 +11,9 @@ public class GatewayConfig {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route("lb://dynamic_route", r -> r
+                .route("dynamic-route", r -> r
                         .path("/api/**")
-                        .uri("http://localhost:8080")) // Placeholder URI
+                        .uri("lb://dynamic-route"))
                 .build();
     }
 }
