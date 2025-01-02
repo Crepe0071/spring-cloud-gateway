@@ -58,7 +58,17 @@ public class CustomRoutingFilter implements GlobalFilter {
         try {
             String query = originalUri.getQuery(); // 기존 query string 추출
             String path = originalUri.getPath();
-            return new URI("http", null, wasAddress, -1, path, query, null);
+            // URI 생성
+                  if (wasAddress.contains("[")) {
+                      // IPv6 주소라면 그대로 사용
+                      return new URI("http", null, wasAddress, -1, path, query, null);
+                  } else {
+                      // 일반 주소 또는 IPv4는 포트 분리
+                      String[] hostAndPort = wasAddress.split(":");
+                      String host = hostAndPort[0];
+                      int port = hostAndPort.length > 1 ? Integer.parseInt(hostAndPort[1]) : -1;
+                      return new URI("http", null, host, port, path, query, null);
+                  }
         } catch (URISyntaxException e) {
             throw new RuntimeException("Failed to build URI with query parameters", e);
         }
