@@ -5,6 +5,9 @@ spring:
   application:
     name: api-gateway
 
+  profiles:
+    active: local
+
 #  cloud:
 #    gateway:
 #      httpclient:
