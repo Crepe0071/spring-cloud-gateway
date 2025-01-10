@@ -19,7 +19,7 @@ public class ScheduleService {
 
 	private final WasStateManager wasStateManager;
 
-	@Scheduled(cron = "* */1 * * * *")
+	@Scheduled(cron = "0 */1 * * * *")
 	public void healthCheck() {
 
 		wasStateManager.getDownInstances().parallelStream()
